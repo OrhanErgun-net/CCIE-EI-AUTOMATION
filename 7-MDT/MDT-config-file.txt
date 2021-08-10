@@ -1,0 +1,7 @@
+telemetry ietf subscription 101
+encoding encode-kvgpb
+filter xpath /process-cpu-ios-xe-oper:cpu-usage/cpu-utilization/five-seconds
+source-address 192.168.96.121
+stream yang-push
+update-policy periodic 500
+receiver ip address 192.168.96.80 57000 protocol grpc-tcp
