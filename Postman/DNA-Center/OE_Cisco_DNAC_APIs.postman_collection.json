@@ -1,0 +1,979 @@
+{
+	"info": {
+		"_postman_id": "db1e43ac-b3eb-465b-b958-d3a364732a10",
+		"name": "OE Cisco DNAC APIs",
+		"description": "This is a cloned collection and environment from Cisco Digital Network Architecture Center (DNA-C)\nThere is a default environment pointing to Orhan Ergun LAB.\n\n\n### What's in this collection?\n- Authenticate API.\n- Network Discovery and Device Discovery APIs.\n- Device Tags APIs.\n- Path Trace APIs.\n- Command Runner APIs\n\n\nNote: Make sure you update your Environment Variables with the latest Token and Device information!\n\nTo learn more about Cisco DNA Center and Its APIs check out:\n\nhttps://developer.cisco.com/learning/modules/dnac-rest-apis\nhttps://developer.cisco.com/dnacenter/",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Authentication",
+			"item": [
+				{
+					"name": "Save Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"token\", data.Token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "string"
+								},
+								{
+									"key": "saveHelperData",
+									"value": true,
+									"type": "boolean"
+								},
+								{
+									"key": "showPassword",
+									"value": false,
+									"type": "boolean"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic YWRtaW46R3JhcGV2aW5lMQ=="
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{dnac}}/api/system/v1/auth/token",
+							"protocol": "https",
+							"host": [
+								"{{dnac}}"
+							],
+							"path": [
+								"api",
+								"system",
+								"v1",
+								"auth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "2.Network Devices",
+			"item": [
+				{
+					"name": "Get Network Devices",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{dnac}}/dna/intent/api/v1/network-device",
+							"protocol": "https",
+							"host": [
+								"{{dnac}}"
+							],
+							"path": [
+								"dna",
+								"intent",
+								"api",
+								"v1",
+								"network-device"
+							]
+						},
+						"description": "This request uses the \"token\" variable generated from the POST request to get first 14 network-devices"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Template",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{dnac}}/dna/intent/api/v1/template-programmer/template",
+							"protocol": "https",
+							"host": [
+								"{{dnac}}"
+							],
+							"path": [
+								"dna",
+								"intent",
+								"api",
+								"v1",
+								"template-programmer",
+								"template"
+							]
+						},
+						"description": "Example of the /host API"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Device by IP",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"console.log(\"here\");",
+									"console.log(data.response.id);",
+									"if (data.response.id) {",
+									"  tests[\"Body has id\"] = true;",
+									"  postman.setEnvironmentVariable(\"deviceID\", data.response.id);",
+									"}",
+									"else {",
+									"  tests[\"Body has id\"] = false;",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{dnac}}/api/v1/network-device/ip-address/{{deviceIP}}",
+							"protocol": "https",
+							"host": [
+								"{{dnac}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"network-device",
+								"ip-address",
+								"{{deviceIP}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Device Interfaces by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{dnac}}/api/v1/interface/network-device/{{deviceID}}",
+							"protocol": "https",
+							"host": [
+								"{{dnac}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"interface",
+								"network-device",
+								"{{deviceID}}"
+							]
+						},
+						"description": "Example of the /interface API"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Device License by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{dnac}}/api/v1/license-info/network-device/{{deviceID}}",
+							"protocol": "https",
+							"host": [
+								"{{dnac}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"license-info",
+								"network-device",
+								"{{deviceID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Device Module by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{dnac}}/api/v1/network-device/module?deviceId={{deviceID}}",
+							"protocol": "https",
+							"host": [
+								"{{dnac}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"network-device",
+								"module"
+							],
+							"query": [
+								{
+									"key": "deviceId",
+									"value": "{{deviceID}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "3.Tags",
+			"item": [
+				{
+					"name": "Get Tags",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"console.log(\"here\");",
+									"console.log(data.response);",
+									"if (data.response) {",
+									"  tests[\"Body has response\"] = true;",
+									"  var L = data.response.length;",
+									"    for (var i = 0; i < L; i++) {",
+									"    var obj = data.response[i];",
+									"    if (obj.tag == \"InterestingDevice\") {",
+									"           postman.setEnvironmentVariable(\"tagId\", obj.id);",
+									"       } ",
+									"}",
+									"  ",
+									"}",
+									"else {",
+									"  tests[\"Body has response\"] = false;",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{dnac}}/api/v1/tag",
+							"protocol": "https",
+							"host": [
+								"{{dnac}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tag"
+							]
+						},
+						"description": "Gets a list of all tags defined on the controller"
+					},
+					"response": []
+				},
+				{
+					"name": "Post Tag",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"console.log(\"here\");",
+									"console.log(data.response.taskId);",
+									"if (data.response.taskId) {",
+									"  tests[\"Body has taskid\"] = true;",
+									"  postman.setEnvironmentVariable(\"taskId\", data.response.taskId);",
+									"}",
+									"else {",
+									"  tests[\"Body has taskId\"] = false;",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"tag\" : \"InterestingDevice\" }"
+						},
+						"url": {
+							"raw": "https://{{dnac}}/api/v1/tag",
+							"protocol": "https",
+							"host": [
+								"{{dnac}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tag"
+							]
+						},
+						"description": "Creates a new tag on the controller"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Task by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{dnac}}/api/v1/task/{{taskId}}",
+							"protocol": "https",
+							"host": [
+								"{{dnac}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"task",
+								"{{taskId}}"
+							]
+						},
+						"description": "Gets a task status.\nuses environment variable for the taskId"
+					},
+					"response": []
+				},
+				{
+					"name": "Post Tag to Device",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"console.log(\"here\");",
+									"console.log(data.response.taskId);",
+									"if (data.response.taskId) {",
+									"  tests[\"Body has taskid\"] = true;",
+									"  postman.setEnvironmentVariable(\"taskId\", data.response.taskId);",
+									"}",
+									"else {",
+									"  tests[\"Body has taskId\"] = false;",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"resourceId\": \"{{deviceID}}\",\n\"resourceType\" : \"network-device\",\n  \"tag\": \"InterestingDevice\"\n\n}"
+						},
+						"url": {
+							"raw": "https://{{dnac}}/api/v1/tag/association",
+							"protocol": "https",
+							"host": [
+								"{{dnac}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tag",
+								"association"
+							]
+						},
+						"description": "Associates an existing tag with a network-device.\n\nTag needs to have been created before it can be associated\n\nnetwork-device is the deviceId environment variable, you need to change this"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Tag ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"console.log(\"here\");",
+									"console.log(data.response);",
+									"if (data.response) {",
+									"  tests[\"Body has response\"] = true;",
+									"  var L = data.response.length;",
+									"    for (var i = 0; i < L; i++) {",
+									"    var obj = data.response[i];",
+									"    if (obj.tag == \"InterestingDevice\") {",
+									"           postman.setEnvironmentVariable(\"tagId\", obj.id);",
+									"       } ",
+									"}",
+									"  ",
+									"}",
+									"else {",
+									"  tests[\"Body has response\"] = false;",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{dnac}}/api/v1/tag/association?tag=InterestingDevice&resourceType=network-device",
+							"protocol": "https",
+							"host": [
+								"{{dnac}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tag",
+								"association"
+							],
+							"query": [
+								{
+									"key": "tag",
+									"value": "InterestingDevice"
+								},
+								{
+									"key": "resourceType",
+									"value": "network-device"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Tag from Device",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data1 = JSON.parse(responseBody);",
+									"console.log(\"here\");",
+									"console.log(data1.response.taskId);",
+									"",
+									"postman.setEnvironmentVariable(\"taskId\", data1.response.taskId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{dnac}}/api/v1/tag/association/{{tagId}}?resourceType=network-device&resourceId={{deviceID}}",
+							"protocol": "https",
+							"host": [
+								"{{dnac}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tag",
+								"association",
+								"{{tagId}}"
+							],
+							"query": [
+								{
+									"key": "resourceType",
+									"value": "network-device"
+								},
+								{
+									"key": "resourceId",
+									"value": "{{deviceID}}"
+								}
+							]
+						},
+						"description": "Deletes association between tag and device\n\nyou need to delete the association before you can delete the tag"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Tag",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data1 = JSON.parse(responseBody);",
+									"console.log(\"here\");",
+									"console.log(data1.response.taskId);",
+									"",
+									"postman.setEnvironmentVariable(\"taskId\", data1.response.taskId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{dnac}}/api/v1/tag/{{tagId}}",
+							"protocol": "https",
+							"host": [
+								"{{dnac}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tag",
+								"{{tagId}}"
+							]
+						},
+						"description": "delete tag from controller"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4.Path Trace",
+			"item": [
+				{
+					"name": "Post Flow-Analysis",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"console.log(\"here\");",
+									"console.log(data.response.taskId);",
+									"if (data.response.taskId) {",
+									"  tests[\"Body has taskid\"] = true;",
+									"  postman.setEnvironmentVariable(\"taskId\", data.response.taskId);",
+									"}",
+									"else {",
+									"  tests[\"Body has taskId\"] = false;",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \"sourceIP\" : \"10.10.22.98\", \"destIP\" : \"10.10.22.114\"}"
+						},
+						"url": {
+							"raw": "https://{{dnac}}/api/v1/flow-analysis",
+							"protocol": "https",
+							"host": [
+								"{{dnac}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"flow-analysis"
+							]
+						},
+						"description": "Creates a flow analysis.  sourceIP and destIP are specified.\n\nsrc/dst port can also be provided"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Task by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"",
+									"if (data.response.progress) {",
+									"  tests[\"Body has progress\"] = true;",
+									"  postman.setEnvironmentVariable(\"pathId\", data.response.progress);",
+									"}",
+									"else {",
+									"  tests[\"Body has progress\"] = false;",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{dnac}}/api/v1/task/{{taskId}}",
+							"protocol": "https",
+							"host": [
+								"{{dnac}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"task",
+								"{{taskId}}"
+							]
+						},
+						"description": "Gets a task status.\nuses environment variable for the taskId\n\nAlso parses the result of the task to find the ID of the path.\n\nThis is stored in the pathId environment variable"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Flow-Analysis by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{dnac}}/api/v1/flow-analysis/{{pathId}}",
+							"protocol": "https",
+							"host": [
+								"{{dnac}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"flow-analysis",
+								"{{pathId}}"
+							]
+						},
+						"description": "Gets a flow-analyis\nuses environment variable for the pathId"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5.Command Runner",
+			"item": [
+				{
+					"name": "Post Command to Device",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"console.log(\"here\");",
+									"console.log(data.response.taskId);",
+									"if (data.response.taskId) {",
+									"  tests[\"Body has taskid\"] = true;",
+									"  postman.setEnvironmentVariable(\"taskId\", data.response.taskId);",
+									"}",
+									"else {",
+									"  tests[\"Body has taskId\"] = false;",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n \"name\" : \"show ver\",\n \"commands\" : [\"show ver | inc RELEASE\"],\n \"deviceUuids\" : [ \"{{deviceID}}\"]\n}\n"
+						},
+						"url": {
+							"raw": "https://{{dnac}}/api/v1/network-device-poller/cli/read-request",
+							"protocol": "https",
+							"host": [
+								"{{dnac}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"network-device-poller",
+								"cli",
+								"read-request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Task by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"var data = JSON.parse(responseBody);",
+									"",
+									"if (data.response.progress) {",
+									"  ",
+									"  var prog = JSON.parse(data.response.progress)",
+									"  postman.setEnvironmentVariable(\"fileId\", prog.fileId);",
+									"  ",
+									"}",
+									"else {",
+									"  tests[\"Body has no fileId\"] = false;",
+									"}",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{dnac}}/api/v1/task/{{taskId}}",
+							"protocol": "https",
+							"host": [
+								"{{dnac}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"task",
+								"{{taskId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get File by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{dnac}}/api/v1/file/{{fileId}}",
+							"protocol": "https",
+							"host": [
+								"{{dnac}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"file",
+								"{{fileId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
