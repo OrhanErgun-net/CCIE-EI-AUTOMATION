@@ -1,0 +1,30 @@
+hostname {{Site_Name}}_Branch
+!
+interface Loopback1
+ description ### Main loopback ###
+ ip address 192.168.244.{{Site_ID}} 255.255.255.255
+ !
+interface GigabitEthernet0/0
+ description ### Uplink WAN to {{Site_Name}} site ###
+ ip address dhcp 
+!
+interface GigabitEthernet0/1
+ description ### Downlink to {{Site_Name}} LAN_SW G0/24 ###
+!
+interface GigabitEthernet0/1.{{IT_ID}}
+ description ### IT_{{IT_ID}} Gateway ###
+ encapsulation dot1Q {{IT_ID}}
+ ip address 10.{{Site_ID}}.{{IT_ID}}.254 255.255.255.0
+!
+interface GigabitEthernet0/1.{{MGMT_ID}}
+ description ### MGMT_{{MGMT_ID}} Gateway ###
+ encapsulation dot1Q {{MGMT_ID}}
+ ip address 10.{{Site_ID}}.{{MGMT_ID}}.254 255.255.255.0
+
+router ospf 11
+ router-id 192.168.244.{{Site_ID}}
+ passive-interface GigabitEthernet0/1.{{IT_ID}}
+ passive-interface GigabitEthernet0/1.{{MGMT_ID}}
+ network 10.{{Site_ID}}.{{IT_ID}}.0 0.255.255.255 area 0
+ network 10.{{Site_ID}}.{{MGMT_ID}}.0 0.255.255.255 area 0
+ !
