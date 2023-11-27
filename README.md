@@ -1,5 +1,7 @@
-# CCIE-EI-AUTOMATION
+# CCIE-EI-AUTOMATION v1.1 (updated)
 This is the repository for the CCIE Enterprise Infrastructure Automation Module for the CCIE Enterprise Infrastructure course.
+
+![image](md_image1.png?raw=true "md_image1.png")
 
 ## Course
 CCIE EI - [OrhanErgun](https://orhanergun.net/courses/self-paced-ccie-enterprise-training/)
